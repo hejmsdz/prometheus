@@ -1,6 +1,25 @@
 import React, { useState } from 'react';
 import { Typography, Slider, Button } from '@material-ui/core';
 
+const ParamSlider = ({ label, value, setter, description }) => (
+  <div>
+    <Typography gutterBottom>
+      {label}
+    </Typography>
+    <Slider
+      value={value}
+      onChange={(e, v) => setter(v)}
+      valueLabelDisplay="auto"
+      step={0.01}
+      min={0}
+      max={1}
+    />
+    <Typography variant="caption" paragraph>
+      {description}
+    </Typography>
+  </div>
+)
+
 export default ({ onMine }) => {
   const [preserveThreshold, setPreserveThreshold] = useState(0.2);
   const [ratioThreshold, setRatioThreshold] = useState(0.05);
@@ -9,66 +28,36 @@ export default ({ onMine }) => {
   const [nodeCutoff, setNodeCutoff] = useState(0.1);
   return (
     <div>
-      <Typography gutterBottom>
-        Preserve threshold
-      </Typography>
-      <Slider
+      <ParamSlider
+        label="Preserve threshold"
         value={preserveThreshold}
-        onChange={(e, v) => setPreserveThreshold(v)}
-        valueLabelDisplay="auto"
-        step={0.01}
-        min={0}
-        max={1}
+        setter={setPreserveThreshold}
+        description="If relative significances of two edges forming a length-2-loop are above this threshold, both are preserved."
       />
-
-      <Typography gutterBottom>
-        Ratio threshold
-      </Typography>
-      <Slider
+      <ParamSlider
+        label="Ratio threshold"
         value={ratioThreshold}
-        onChange={(e, v) => setRatioThreshold(v)}
-        valueLabelDisplay="auto"
-        step={0.01}
-        min={0}
-        max={1}
+        setter={setRatioThreshold}
+        description="If offset (difference) between relative significance of concurrent edges is below this threshold, both are removed."
       />
-
-      <Typography gutterBottom>
-        Utility ratio
-      </Typography>
-      <Slider
+      <ParamSlider
+        label="Utility ratio"
         value={utilityRatio}
-        onChange={(e, v) => setUtilityRatio(v)}
-        valueLabelDisplay="auto"
-        step={0.01}
-        min={0}
-        max={1}
+        setter={setUtilityRatio}
+        description="Balances significance and correlation in the utility function used for edge filtering. Larger value gives more importance to significance."
       />
-
-      <Typography gutterBottom>
-        Edge cutoff
-      </Typography>
-      <Slider
+      <ParamSlider
+        label="Edge cutoff"
         value={edgeCutoff}
-        onChange={(e, v) => setEdgeCutoff(v)}
-        valueLabelDisplay="auto"
-        step={0.01}
-        min={0}
-        max={1}
+        setter={setEdgeCutoff}
+        description="Edges with relative utility below this threshold will be filtered out."
       />
-
-      <Typography gutterBottom>
-        Node cutoff
-      </Typography>
-      <Slider
+      <ParamSlider
+        label="Node cutoff"
         value={nodeCutoff}
-        onChange={(e, v) => setNodeCutoff(v)}
-        valueLabelDisplay="auto"
-        step={0.01}
-        min={0}
-        max={1}
+        setter={setNodeCutoff}
+        description="Nodes with significance below this threshold will be clustered or removed."
       />
-
       <Button
         variant="contained"
         color="primary"
