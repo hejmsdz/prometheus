@@ -1,26 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Grid, Paper } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-function App() {
+import Graph from './Graph';
+import Controls from './Controls';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    margin: 0,
+    width: '100%',
+  },
+  box: {
+    padding: theme.spacing(2),
+  }
+}));
+
+const App = () => {
+  const styles = useStyles();
+  const [graph, setGraph] = useState();
+
+  const handleMine = (params) => {
+    console.log(params);
+    setGraph(null);
+    fetch('http://localhost:4567/mine', { method: 'POST', body: JSON.stringify(params) })
+      .then(r => r.json())
+      .then(setGraph)
+  };
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">
+            Fuzzy Miner
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Grid container spacing={3} className={styles.container}>
+        <Grid item xs={9}>
+          <Paper className={styles.box}>
+            <Graph graph={graph} />
+          </Paper>
+        </Grid>
+        <Grid item xs={3}>
+          <Paper className={styles.box}>
+            <Controls onMine={handleMine} />
+          </Paper>
+        </Grid>
+      </Grid>
     </div>
   );
-}
+};
 
 export default App;
