@@ -2,9 +2,6 @@ import React from 'react';
 import GraphVis from 'react-graph-vis';
 
 const options = {
-  // layout: {
-  //   hierarchical: true,
-  // },
   height: '700px',
   nodes: {
     shape: 'box',
@@ -38,7 +35,6 @@ const transformGraph = (graph) => {
     const intensity = significance / maxNodeSignificance;
     return {
       ...node,
-      title: 'siema',
       color: {
         background: scaleColor(intensity),
       },
@@ -69,4 +65,4 @@ Graph.defaultProps = {
   graph: null,
 };
 
-export default Graph;
+export default React.memo(Graph);
