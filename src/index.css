@@ -15,3 +15,7 @@ text {
   fill: none;
   stroke-width: 1.5px;
 }
+
+.edgeLabel text {
+  font-size: 0.75rem;
+}

@@ -38,7 +38,7 @@ const App = () => {
       </AppBar>
       <Grid container spacing={3} className={styles.container}>
         <Grid item xs={9}>
-          <Paper className={styles.box}>
+          <Paper>
             <Graph graph={graph} />
           </Paper>
         </Grid>

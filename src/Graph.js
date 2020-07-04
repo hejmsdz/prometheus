@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { select } from 'd3';
+import * as d3 from 'd3';
 import { graphlib, render as renderGraph } from 'dagre-d3';
 
 const scaleColor = (q) => {
@@ -34,15 +34,27 @@ const transformGraph = ({ nodes, edges }) => {
   return graph;
 };
 
+const initialScale = 1;
+
 const GraphComponent = ({ graph }) => {
   const ref = useRef();
 
   useEffect(() => {
     if (graph) {
-      const svg = select(ref.current);
+      const svg = d3.select(ref.current);
       svg.selectAll('*').remove();
       const inner = svg.append('g');
-      renderGraph()(inner, transformGraph(graph));
+      const g = transformGraph(graph);
+
+      const zoom = d3.zoom().on('zoom', () => inner.attr('transform', d3.event.transform));
+      svg.call(zoom);
+      
+      renderGraph()(inner, g);
+
+      svg.call(zoom.transform, d3.zoomIdentity.translate(
+        (ref.current.getBoundingClientRect().width - g.graph().width * initialScale) / 2,
+        20
+      ).scale(initialScale));
     }
   }, [graph]);
 
