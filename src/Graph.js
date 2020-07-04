@@ -1,28 +1,6 @@
-import React from 'react';
-import GraphVis from 'react-graph-vis';
-
-const options = {
-  height: '900px',
-  nodes: {
-    shape: 'box',
-    margin: 10,
-    borderWidth: 0,
-    color: {
-      background: '#3f51b5',
-    },
-    font: {
-      color: '#fff',
-      size: 16,
-      face: 'Roboto',
-    },
-  },
-  edges: {
-    width: 2,
-  },
-  physics: {
-    enabled: false,
-  }
-};
+import React, { useRef, useEffect } from 'react';
+import { select } from 'd3';
+import { graphlib, render as renderGraph } from 'dagre-d3';
 
 const scaleColor = (q) => {
   const r = 63;
@@ -32,41 +10,49 @@ const scaleColor = (q) => {
   return `rgb(${q * r + (1 - q) * 232}, ${q * g + (1 - q) * 234}, ${q * b + (1 - q) * 246})`;
 }
 
-const transformGraph = (graph) => {
-  const maxNodeSignificance = Math.max(...graph.nodes.map(e => e.significance));
-  const nodes = graph.nodes.map(({ label, significance, ...node }) => {
-    const intensity = significance / maxNodeSignificance;
-    return {
-      ...node,
-      label: `${label} [${significance.toFixed(2)}]`,
-      color: {
-        background: scaleColor(intensity),
-      },
-      font: {
-        color: intensity > 0.5 ? '#fff' : '#000',
-      }
-    };
+const transformGraph = ({ nodes, edges }) => {
+  const graph = new graphlib.Graph().setGraph({});
+  const maxNodeSignificance = Math.max(...nodes.map(n => n.significance));
+  nodes.forEach(node => {
+    const intensity = node.significance / maxNodeSignificance;
+    graph.setNode(`${node.id}`, {
+      label: `${node.label} [${node.significance.toFixed(2)}]`,
+      rx: 5,
+      ry: 5,
+      style: `fill: ${scaleColor(intensity)}`,
+      labelStyle: `fill: ${intensity > 0.5 ? '#fff' : '#000'}`,
+    });
   });
 
-  const maxEdgeSignificance = Math.max(...graph.edges.map(e => e.significance));
-  const edges = graph.edges.map(({ significance, correlation, ...edge }) => ({
-    ...edge,
-    color: { opacity: 0.02 + (significance / maxEdgeSignificance) * 0.98 },
-    label: `${significance.toFixed(2)} / ${correlation.toFixed(2)}`,
-  }));
-
-  return { nodes, edges };
+  const maxEdgeSignificance = Math.max(...edges.map(e => e.significance));
+  edges.forEach(edge => {
+    graph.setEdge(`${edge.from}`, `${edge.to}`, {
+      label: `${edge.significance.toFixed(2)}/${edge.correlation.toFixed(2)}`,
+      style: `opacity: ${0.05 + (edge.significance / maxEdgeSignificance) * 0.95}`,
+    });
+  });
+  return graph;
 };
 
-const Graph = ({ graph }) => graph && (
-  <GraphVis
-    graph={transformGraph(graph)}
-    options={options}
-  />
-);
+const GraphComponent = ({ graph }) => {
+  const ref = useRef();
 
-Graph.defaultProps = {
+  useEffect(() => {
+    if (graph) {
+      const svg = select(ref.current);
+      svg.selectAll('*').remove();
+      const inner = svg.append('g');
+      renderGraph()(inner, transformGraph(graph));
+    }
+  }, [graph]);
+
+  return (
+    <svg style={{ width: '100%', height: '900px' }} ref={ref} />
+  );
+};
+
+GraphComponent.defaultProps = {
   graph: null,
 };
 
-export default React.memo(Graph);
+export default React.memo(GraphComponent);

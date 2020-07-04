@@ -5,3 +5,13 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+text {
+  font-family: 'Roboto';
+}
+
+.edgePath path {
+  stroke: #333;
+  fill: none;
+  stroke-width: 1.5px;
+}
