@@ -2,7 +2,7 @@ import React from 'react';
 import GraphVis from 'react-graph-vis';
 
 const options = {
-  height: '700px',
+  height: '900px',
   nodes: {
     shape: 'box',
     margin: 10,
@@ -18,6 +18,9 @@ const options = {
   },
   edges: {
     width: 2,
+  },
+  physics: {
+    enabled: false,
   }
 };
 
@@ -31,10 +34,11 @@ const scaleColor = (q) => {
 
 const transformGraph = (graph) => {
   const maxNodeSignificance = Math.max(...graph.nodes.map(e => e.significance));
-  const nodes = graph.nodes.map(({ significance, ...node }) => {
+  const nodes = graph.nodes.map(({ label, significance, ...node }) => {
     const intensity = significance / maxNodeSignificance;
     return {
       ...node,
+      label: `${label} [${significance.toFixed(2)}]`,
       color: {
         background: scaleColor(intensity),
       },
@@ -48,7 +52,7 @@ const transformGraph = (graph) => {
   const edges = graph.edges.map(({ significance, correlation, ...edge }) => ({
     ...edge,
     color: { opacity: 0.02 + (significance / maxEdgeSignificance) * 0.98 },
-    label: `${significance.toFixed(2)}`,
+    label: `${significance.toFixed(2)} / ${correlation.toFixed(2)}`,
   }));
 
   return { nodes, edges };
