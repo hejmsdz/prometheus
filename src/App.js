@@ -19,6 +19,8 @@ const App = () => {
   const styles = useStyles();
   const [graph, setGraph] = useState();
 
+  window.setGraph = setGraph;
+
   const handleMine = (params) => {
     console.log(params);
     setGraph(null);
