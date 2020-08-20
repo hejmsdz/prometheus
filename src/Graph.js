@@ -1,6 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { graphlib, render as renderGraph } from 'dagre-d3';
+import { save } from 'd3-save-svg';
+
+window.save = () => {
+  save(document.querySelector('svg'), {
+    filename: 'graph',
+  });
+};
 
 const svgStyle = `
 text {
