@@ -2,6 +2,22 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import { graphlib, render as renderGraph } from 'dagre-d3';
 
+const svgStyle = `
+text {
+  font-family: 'Roboto';
+}
+
+.edgePath path {
+  stroke: #333;
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.edgeLabel text {
+  font-size: 0.75rem;
+}
+`;
+
 const scaleColor = (q) => {
   const r = 63;
   const g = 81;
@@ -42,7 +58,7 @@ const GraphComponent = ({ graph }) => {
   useEffect(() => {
     if (graph) {
       const svg = d3.select(ref.current);
-      svg.selectAll('*').remove();
+      svg.selectAll(':not(style)').remove();
       const inner = svg.append('g');
       const g = transformGraph(graph);
 
@@ -59,7 +75,9 @@ const GraphComponent = ({ graph }) => {
   }, [graph]);
 
   return (
-    <svg style={{ width: '100%', height: '900px' }} ref={ref} />
+    <svg style={{ width: '100%', height: '900px' }} ref={ref}>
+      <style>{svgStyle}</style>
+    </svg>
   );
 };
 
