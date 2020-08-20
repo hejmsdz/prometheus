@@ -7,7 +7,7 @@ text {
   font-family: 'Roboto';
 }
 
-.edgePath path {
+.edgePath > path {
   stroke: #333;
   fill: none;
   stroke-width: 1.5px;
@@ -64,7 +64,7 @@ const GraphComponent = ({ graph }) => {
 
       const zoom = d3.zoom().on('zoom', () => inner.attr('transform', d3.event.transform));
       svg.call(zoom);
-      
+
       renderGraph()(inner, g);
 
       svg.call(zoom.transform, d3.zoomIdentity.translate(
