@@ -11,7 +11,7 @@ window.save = () => {
 
 const svgStyle = `
 text {
-  font-family: 'Roboto';
+  font-family: sans-serif;
 }
 
 .edgePath > path {
@@ -73,6 +73,13 @@ const GraphComponent = ({ graph }) => {
       svg.call(zoom);
 
       renderGraph()(inner, g);
+
+      svg.selectAll('[marker-end]').attr('marker-end', (_, i, nodes) => {
+        const node = nodes[i];
+        const url = node.attributes['marker-end'].value;
+        const [fragment] = url.match(/#\w+/);
+        return `url(${fragment})`;
+      });
 
       svg.call(zoom.transform, d3.zoomIdentity.translate(
         (ref.current.getBoundingClientRect().width - g.graph().width * initialScale) / 2,
