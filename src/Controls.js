@@ -21,11 +21,11 @@ const ParamSlider = ({ label, value, setter, description }) => (
 )
 
 export default ({ onMine }) => {
-  const [preserveThreshold, setPreserveThreshold] = useState(0.2);
-  const [ratioThreshold, setRatioThreshold] = useState(0.05);
-  const [utilityRatio, setUtilityRatio] = useState(0.5);
-  const [edgeCutoff, setEdgeCutoff] = useState(0.2);
-  const [nodeCutoff, setNodeCutoff] = useState(0.1);
+  const [preserveThreshold, setPreserveThreshold] = useState(0.6);
+  const [ratioThreshold, setRatioThreshold] = useState(0.7);
+  const [utilityRatio, setUtilityRatio] = useState(0.75);
+  const [edgeCutoff, setEdgeCutoff] = useState(0.8);
+  const [nodeCutoff, setNodeCutoff] = useState(0.0);
   return (
     <div>
       <ParamSlider
